@@ -104,7 +104,7 @@ let factory = () => {
         },
 
         isPlayerLive: (state, id) => {
-            return GameState.getPlayerIndex(id) > -1;
+            return state[GameState.getPlayerIndex(id)] > -1;
         },
 
         getEmptyFieldSize: (state, cords) => {
@@ -189,7 +189,7 @@ class Input {
             if (this.playersStatus[i]) {
                 if (x0 === -1) {
                     this.playersStatus = false;
-                    GameState.killPlayer(id);
+                    GameState.setPlayerPosition(state, i, [x1, y1]);
                 } else {
                     if (firstRead) {
                         GameState.setTileOwner(state, [x0, y0], i);
@@ -248,6 +248,8 @@ let mainGameState = GameState.init();
 
 while (true) {
     Input$1.read(mainGameState);
+
+    printErr('My id:', GameState.getMyID(mainGameState));
 
     print(AI$1.run(mainGameState));
 }

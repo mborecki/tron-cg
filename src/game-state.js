@@ -82,7 +82,7 @@ let factory = () => {
         },
 
         isPlayerLive: (state, id) => {
-            return GameState.getPlayerIndex(id) > -1;
+            return state[GameState.getPlayerIndex(id)] > -1;
         },
 
         getEmptyFieldSize: (state, cords) => {

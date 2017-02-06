@@ -29,7 +29,7 @@ class Input {
             if (this.playersStatus[i]) {
                 if (x0 === -1) {
                     this.playersStatus = false;
-                    GameState.killPlayer(id);
+                    GameState.setPlayerPosition(state, i, [x1, y1]);
                 } else {
                     if (firstRead) {
                         GameState.setTileOwner(state, [x0, y0], i);
