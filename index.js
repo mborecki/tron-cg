@@ -107,6 +107,38 @@ let factory = () => {
             return GameState.getPlayerIndex(id) > -1;
         },
 
+        getEmptyFieldSize: (state, cords) => {
+            let list = [cords];
+            let checked = new Set();
+            let size = 0;
+
+            function add(tile) {
+                let hash = String(tile[0]) + String(tile[1]);
+                if (!checked.has(hash)) {
+                    checked.add(hash);
+                    list.push(tile);
+                }
+            }
+
+            while (list.length) {
+
+                // printErr('LOOP', list.length)
+                let tile = list.shift();
+
+                if (GameState.isTileEmpty(state, tile)) {
+                    size++;
+
+                    add([tile[0] + 1, tile[1]]);
+                    add([tile[0] - 1, tile[1]]);
+                    add([tile[0], tile[1] + 1]);
+                    add([tile[0], tile[1] - 1]);
+                }
+            }
+
+
+            return size;
+        },
+
         //===========================
 
         getPlayerIndex: (id) => {
@@ -179,25 +211,30 @@ var Utils = {
     }
 };
 
-var simpleAI = {
+var emptyFieldAI = {
     run: (state) => {
         let myID = GameState.getMyID(state);
         let myCords = GameState.getPlayerPosition(state, myID);
 
-        for (let i = 0; i < 4; i++) {
-            let order = CONST.ORDERS.LIST[i];
-            if (GameState.isTileEmpty(state, Utils.getCordsAfterOrder(myCords, order))) {
-                return order;
-            }
-        }
+        let result = CONST.ORDERS.LIST
+            .map((order) => {
+                let size = GameState.getEmptyFieldSize(state, Utils.getCordsAfterOrder(myCords, order));
+                return {
+                    order,
+                    size
+                }
+            })
+            .sort((a, b) => {
+                return b.size - a.size;
+            });
 
-        return 'LEFT';
+        return result[0].order;
     }
 };
 
 class AI {
     constructor() {
-        this.aiStrategy = simpleAI;
+        this.aiStrategy = emptyFieldAI;
     }
 
     run(state) {

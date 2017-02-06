@@ -85,6 +85,38 @@ let factory = () => {
             return GameState.getPlayerIndex(id) > -1;
         },
 
+        getEmptyFieldSize: (state, cords) => {
+            let list = [cords];
+            let checked = new Set();
+            let size = 0;
+
+            function add(tile) {
+                let hash = String(tile[0]) + String(tile[1]);
+                if (!checked.has(hash)) {
+                    checked.add(hash);
+                    list.push(tile);
+                }
+            }
+
+            while (list.length) {
+
+                // printErr('LOOP', list.length)
+                let tile = list.shift();
+
+                if (GameState.isTileEmpty(state, tile)) {
+                    size++;
+
+                    add([tile[0] + 1, tile[1]]);
+                    add([tile[0] - 1, tile[1]]);
+                    add([tile[0], tile[1] + 1]);
+                    add([tile[0], tile[1] - 1]);
+                }
+            }
+
+
+            return size;
+        },
+
         //===========================
 
         getPlayerIndex: (id) => {

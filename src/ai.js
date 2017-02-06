@@ -1,9 +1,10 @@
 
 import simpleAI from './ai/simple.js';
+import emptyFieldAI from './ai/empty-field.js';
 
 class AI {
     constructor() {
-        this.aiStrategy = simpleAI;
+        this.aiStrategy = emptyFieldAI;
     }
 
     run(state) {
